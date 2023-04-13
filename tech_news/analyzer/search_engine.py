@@ -34,4 +34,11 @@ def search_by_date(date):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    search_result = list(
+        db.news.find(
+            {"category": {"$regex": category, "$options": "i"}},
+            # {"title": 1, "url": 1, "_id": 0},
+        )
+    )
+
+    return [(news["title"], news["url"]) for news in search_result]
