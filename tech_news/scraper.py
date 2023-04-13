@@ -32,7 +32,40 @@ def scrape_next_page_link(html_content):
 
 # Requisito 4
 def scrape_news(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    url = selector.css("div.pk-share-buttons-wrap::attr(data-share-url)").get()
+
+    title = (
+        selector.css("h1.entry-title::text").get().replace("\xa0", "").strip()
+    )
+
+    timestamp = selector.css("li.meta-date::text").get()
+
+    writer = selector.css("span.author a::text").get()
+
+    reading_time = int(
+        selector.css("li.meta-reading-time::text").re_first(r"\d+")
+    )
+
+    first_paragraph = selector.css("div.entry-content p")[0]
+    summary = (
+        "".join(first_paragraph.css("* ::text").getall())
+        .replace("\xa0", "")
+        .strip()
+    )
+
+    category = selector.css("div.meta-category span.label::text").get()
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "reading_time": reading_time,
+        "summary": summary,
+        "category": category,
+    }
 
 
 # Requisito 5
